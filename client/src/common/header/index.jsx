@@ -55,9 +55,6 @@ class Header extends React.Component {
                         <LinkContainer to={'/thoughts'}>
                             <Nav.Link>Thoughts</Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to={'/bits'}>
-                            <Nav.Link>A bit of everything</Nav.Link>
-                        </LinkContainer>
                         </Nav>
                         <Nav.Link className="right">Work In Progress!</Nav.Link>
                     </Navbar.Collapse>
