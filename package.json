@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "nodemon": "^2.0.2",
+    "path": "^0.12.7"
+  },
+  "name": "research_client",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "Mikhail <mkorchevskiy@ryerson.ca>",
+  "license": "MIT",
+  "scripts": {
+    "setup": "cd ./client && yarn install && cd .. && yarn install",
+    "dev": "cp -r ./client/build/* ./dist/ && nodemon src/index.js"
+  }
+}
