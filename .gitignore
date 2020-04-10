@@ -4,3 +4,5 @@ keys/
 build/
 dist/
 *.sct
+*.zip
+.env
