@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const  Promise = require('promise');
 const { Pool } = require('pg');
 require('dotenv').config();
@@ -28,4 +27,45 @@ const getTesting = () =>
     });
   });
 
+const getUserInfo = (username, password) =>
+  new Promise((resolve, reject) => {
+    query(`SELECT first_name, last_name, role FROM data.users WHERE username = '${username}' AND password = '${password}';`, null, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res.rows);
+      }
+    });
+  });
+
+  // Fetching a caption for user depending in whether that caption was evaluated or not
+  const fetchCaption = (username) =>
+    new Promise((resolve, reject) => {
+      query(`WITH tmp AS (SELECT captions_data.id as caption_id, image_data.id as image_id, image_data.coco_url as link, captions_data.caption
+            FROM data.image_data inner join data.captions_data ON image_data.id = captions_data.image_id)
+            SELECT * FROM tmp 
+            WHERE tmp.caption_id NOT IN (SELECT responses.caption_id FROM data.responses INNER JOIN data.users ON responses.user_id = users.id WHERE users.username = '${username}')
+            OFFSET floor(random() * (SELECT COUNT(*) FROM tmp)) LIMIT 1;`, null, (err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res.rows);
+        }
+      });
+    });
+
+  const addNewRequest = (first_name, last_name, email, username) =>
+  new Promise((resolve, reject) => {
+    query(`INSERT INTO data.requests VALUES ('${first_name}', '${last_name}', '${email}', '${username}');`, null, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
+  });
+
 exports.getTesting = getTesting;
+exports.getUserInfo = getUserInfo;
+exports.fetchCaption = fetchCaption;
+exports.addNewRequest = addNewRequest;

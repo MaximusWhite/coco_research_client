@@ -45,6 +45,10 @@ class Header extends React.Component {
                                 <LinkContainer to={'/'}>
                                     <Nav.Link>Home</Nav.Link>
                                 </LinkContainer>
+                                { sessionStorage.getItem('auth') == 'true' ?                                 
+                                    <LinkContainer to={'/survey'}>
+                                        <Nav.Link>Survey</Nav.Link>
+                                    </LinkContainer> : '' }
                             </Nav>
                         </Navbar.Collapse>
                     </Navbar>

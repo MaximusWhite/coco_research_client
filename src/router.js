@@ -1,6 +1,11 @@
 const { Router } = require('express');
 const router = Router();
-const { getTesting } = require('./sqlUtil');
+const { 
+    getTesting,
+    getUserInfo,
+    fetchCaption,
+    addNewRequest
+} = require('./sqlUtil');
 
 router.get('/test', async (req, res) => {
     result = await getTesting();
@@ -9,24 +14,44 @@ router.get('/test', async (req, res) => {
     });
 });
 
-router.get('/draw_caption/:user_id', (req, res) => {
-    console.log(req.params);
+router.get('/draw_caption/', async (req, res) => {
+    result = await fetchCaption('mkorchev');
     res.json({
-        msg: `User: ${req.params.user_id}`
+        result
     });
 });
 
-router.post('/access_req', (req, res) => {
-   console.log(req.body);
-   res.json({
-       status: 'OK'
-   });
+router.post('/access_req', async (req, res) => {
+   try {
+        result = await addNewRequest(req.body.first_name, req.body.last_name, req.body.email, req.body.username);
+        res.json({
+            status: 'OK'
+        });
+   } catch(err) {
+        res.json({
+            status: 'ERR',
+            detail: err.detail
+        });
+   }
+
 });
 
-router.post('/login', (req, res) => {
-    console.log(req.body);
+router.post('/login', async (req, res) => {
+    username = req.body.username;
+    password = req.body.password;
+    result = await getUserInfo(username, password);
+    status = 'rejected';
+    role = null;
+    first_name = null;
+    if (result.length > 0) {
+        status = 'granted';
+        role = result[0].role;
+        first_name = result[0].first_name;
+    }
     res.json({
-        status: 'granted'
+        status,
+        first_name,
+        role
     });
  });
 

@@ -17,13 +17,4 @@ app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, '..', 'dist', 'index.html'));
 });
 
-// if (process.env.ENVIRONMENT === 'prod') {
-//     https.createServer({
-//         key: fs.readFileSync(path.join(__dirname, './certs/privkey.pem')),
-//         cert: fs.readFileSync(path.join(__dirname, './certs/fullchain.pem')),
-//         requestCert: false,
-//         rejectUnauthorized: false
-//     }, app).listen(port, () => console.log(`listening on https://localhost:${port}!`));
-// } else {
-    app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-//}
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
