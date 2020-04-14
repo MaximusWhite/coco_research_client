@@ -1,10 +1,12 @@
 const { Router } = require('express');
+const axios = require('axios');
 const router = Router();
 const { 
     getTesting,
     getUserInfo,
     fetchCaption,
-    addNewRequest
+    addNewRequest,
+    recordResponse
 } = require('./sqlUtil');
 
 router.get('/test', async (req, res) => {
@@ -14,11 +16,23 @@ router.get('/test', async (req, res) => {
     });
 });
 
-router.get('/draw_caption/', async (req, res) => {
-    result = await fetchCaption('mkorchev');
-    res.json({
-        result
-    });
+router.post('/draw_caption', async (req, res) => {
+    result = await fetchCaption(req.body.username);
+    res.json(result[0]);
+});
+
+router.post('/register_response', async (req, res) => {
+    try {
+        result = await recordResponse(req.body.username, req.body.caption_id, req.body.image_id, req.body.caption_score);
+        res.json({
+            status: 'OK'
+        });
+    } catch(err) {
+        res.json({
+            status: 'ERR',
+            detail: err.detail
+        });
+   }
 });
 
 router.post('/access_req', async (req, res) => {
@@ -33,7 +47,6 @@ router.post('/access_req', async (req, res) => {
             detail: err.detail
         });
    }
-
 });
 
 router.post('/login', async (req, res) => {

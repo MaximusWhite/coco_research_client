@@ -1,11 +1,8 @@
 import React from 'react';
-import { Navbar, Form, Button, Nav, NavDropdown, FormControl, Image, Col, Container, Row, Modal, Spinner} from 'react-bootstrap';
-import { Link, Redirect } from 'react-router-dom';
-import ReactLoading from 'react-loading';
+import { Button, Col, Container, Row, Spinner, Card, Accordion } from 'react-bootstrap';
 import './style.css';
 import Header from '../common/header';
-import axios from 'axios';
-import $ from 'jquery';
+import MainSurveyComponent from './survey_component';
 
 class SurveyPage extends React.Component {
     constructor(props) {
@@ -35,26 +32,61 @@ class SurveyPage extends React.Component {
       }
     }
 
+    turnAway() {
+      return (
+        <Container style={{ fontSize: "22pt" }} className="border mt-3">
+          <Row className="text-center mt-3">
+            <Col>You do not belong here. Go home.</Col>
+          </Row>
+        </Container>);
+    }
+
+    mainSurveyElement() {
+      return <Spinner animation="grow" variant="primary" />;
+    }
+
+    instructions() {
+      return (
+          <Accordion key='carl' defaultActiveKey="1">
+            <Card>
+              <Accordion.Toggle as={Button} variant="outline-dark link" eventKey="0">
+                Instructions
+              </Accordion.Toggle>
+              <Accordion.Collapse eventKey="0">
+                <Card.Body>
+                    <Row className="text-center my-12">
+                      <Col>1. Read the caption and try to visualize what it describes to you </Col>
+                    </Row>
+                    <Row className="text-center my-12">
+                      <Col>2. Once you have a relatively clear imagery in your head, click <b>"Reveal image"</b></Col>
+                    </Row>
+                    <Row className="text-center my-12">
+                      <Col>3. Look at the image and think <i>how close is the image to what you imagined</i> on a scale from 1 to 10</Col>
+                    </Row>
+                    <Row className="text-center my-12">
+                      <Col>4. Once your decision is made, select appropriate score and click <b>"Submit"</b></Col>
+                    </Row>
+                    <Row className="text-center my-12">
+                      <Col><b>Note: </b> There is no right or wrong answer here! Just select the scores on your personal judgement </Col>
+                    </Row>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          </Accordion>
+      );
+    }
+
     render() {
       return (
         <div> 
-          <Header banner={'main_page'} />
-          {this.state.logged_in == true ? (
-            <Container style={{ fontSize: "22pt" }} className="border mt-3">
-              <Row className="text-center mt-12">
-                <Col>Hi, {this.state.first_name}! Here's the survey  <Spinner animation="grow" variant="primary" /> </Col>
-              </Row>
-              <Row className="text-center mt-10">
-                <Col>Hi, {this.state.first_name}! Here's the survey</Col>
-              </Row>
-            </Container>
-          )
+          <Header banner={'survey'} name={this.state.first_name || null } />
+          {this.state.logged_in == true ?
+            [
+              this.instructions(),
+              <MainSurveyComponent key='bob' />
+            ]
           :
-          <Container style={{ fontSize: "22pt" }} className="border mt-3">
-            <Row className="text-center mt-3">
-              <Col>You do not belong here. Go home.</Col>
-            </Row>
-          </Container>
+            this.turnAway()
           }
         </div>
       );

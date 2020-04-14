@@ -1,10 +1,8 @@
 import React from 'react';
-import { Navbar, Form, Button, Nav, NavDropdown, FormControl, Image, Col, Container, Row, Modal, Alert} from 'react-bootstrap';
-import { Link, Redirect } from 'react-router-dom';
+import { Form, Button, Col, Container, Row, Modal, Alert} from 'react-bootstrap';
 import './style.css';
 import Header from '../common/header';
 import axios from 'axios';
-import $ from 'jquery';
 
 class MainPage extends React.Component {
     constructor(props) {
@@ -25,6 +23,8 @@ class MainPage extends React.Component {
         this.submitLogin = this.submitLogin.bind(this);
         this.cleanupLoginModal = this.cleanupLoginModal.bind(this);
         this.cleanupSignupModal = this.cleanupSignupModal.bind(this);
+        this.nonLogged = this.nonLogged.bind(this);
+        this.loggedIn = this.loggedIn.bind(this);
     }
     
     openModal(type_string) {
@@ -201,37 +201,53 @@ class MainPage extends React.Component {
         </Modal>);
     }
 
+    nonLogged() {
+      return (  
+      <div>
+        <Container style={{ fontSize: "22pt" }} className="border mt-3">
+          <Row className="text-center mt-3">
+            <Col>Welcome to the research page!</Col>
+          </Row>
+          <Row className="text-center">
+            <Col>Please log in using existing account or request access to the survey.</Col>
+          </Row>
+          <Row className="text-center my-3">
+            <Col md={3}></Col>
+            <Col>
+              <Button variant="outline-primary" onClick={() => this.openModal('log')}>Log in</Button>
+            </Col>
+            <Col md={2}></Col>
+            <Col>
+              <Button variant="outline-primary" onClick={() => this.openModal('signup')}>Request access</Button>
+            </Col>
+            <Col md={3}></Col>
+          </Row>
+          <Row>
+          { this.state.signup_completed ? (<Alert variant="success">
+            <Alert.Heading>Success!</Alert.Heading>
+            <p> Thank you for signing up. You will be contacted via email once your request is processed.</p>
+          </Alert>) : '' }
+          </Row>
+        </Container>
+        { this.state.modal_type == 'log' ? this.loginModal() : this.signupModal() }
+      </div>);
+    }
+
+    loggedIn() {
+      console.log('logged');
+      return (
+        <Container style={{ fontSize: "30pt" }} className="border mt-3">
+        <Row className="text-center mt-3">
+          <Col>Hi, {sessionStorage.getItem('first_name')}! You are logged in already, please procceed to the survey page.</Col>
+        </Row>
+      </Container>
+      );
+    }
     render() {
       return (
         <div> 
           <Header banner={'main_page'} />
-          <Container style={{ fontSize: "22pt" }} className="border mt-3">
-            <Row className="text-center mt-3">
-              <Col>Welcome to the research page!</Col>
-            </Row>
-            <Row className="text-center">
-              <Col>Please log in using existing account or request access to the survey.</Col>
-            </Row>
-            <Row className="text-center my-3">
-              <Col md={3}></Col>
-              <Col>
-                <Button variant="outline-primary" onClick={() => this.openModal('log')}>Log in</Button>
-              </Col>
-              <Col md={2}></Col>
-              <Col>
-                <Button variant="outline-primary" onClick={() => this.openModal('signup')}>Request access</Button>
-              </Col>
-              <Col md={3}></Col>
-            </Row>
-            <Row>
-            { this.state.signup_completed ? (<Alert variant="success">
-              <Alert.Heading>Success!</Alert.Heading>
-              <p> Thank you for signing up. You will be contacted via email once your request is processed.</p>
-            </Alert>) : '' }
-            </Row>
-          </Container>
-          { this.state.modal_type == 'log' ? this.loginModal() : this.signupModal() }
-
+          { sessionStorage.getItem('auth') == 'true' ? this.loggedIn() : this.nonLogged()}
         </div>
       );
     }

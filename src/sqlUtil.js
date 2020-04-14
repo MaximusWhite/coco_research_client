@@ -38,13 +38,13 @@ const getUserInfo = (username, password) =>
     });
   });
 
-  // Fetching a caption for user depending in whether that caption was evaluated or not
+  // Fetching a caption for user depending on whether that caption was evaluated or not
   const fetchCaption = (username) =>
     new Promise((resolve, reject) => {
       query(`WITH tmp AS (SELECT captions_data.id as caption_id, image_data.id as image_id, image_data.coco_url as link, captions_data.caption
             FROM data.image_data inner join data.captions_data ON image_data.id = captions_data.image_id)
             SELECT * FROM tmp 
-            WHERE tmp.caption_id NOT IN (SELECT responses.caption_id FROM data.responses INNER JOIN data.users ON responses.user_id = users.id WHERE users.username = '${username}')
+            WHERE tmp.caption_id NOT IN (SELECT responses.caption_id FROM data.responses WHERE responses.username = '${username}')
             OFFSET floor(random() * (SELECT COUNT(*) FROM tmp)) LIMIT 1;`, null, (err, res) => {
         if (err) {
           reject(err);
@@ -65,7 +65,19 @@ const getUserInfo = (username, password) =>
     });
   });
 
+  const recordResponse = (username, caption_id, image_id, caption_score) =>
+  new Promise((resolve, reject) => {
+    query(`INSERT INTO data.responses VALUES ('${username}', DEFAULT, ${caption_id}, ${image_id}, ${caption_score});`, null, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
+  });
+
 exports.getTesting = getTesting;
 exports.getUserInfo = getUserInfo;
 exports.fetchCaption = fetchCaption;
 exports.addNewRequest = addNewRequest;
+exports.recordResponse = recordResponse;
