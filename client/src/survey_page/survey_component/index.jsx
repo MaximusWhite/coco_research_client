@@ -5,7 +5,6 @@ import ReactLoading from 'react-loading';
 import './style.css';
 import Header from '../../common/header';
 import axios from 'axios';
-import $ from 'jquery';
 
 class MainSurveyComponent extends React.Component {
     constructor(props) {
