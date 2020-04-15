@@ -76,16 +76,6 @@ const getUserInfo = (username, password) =>
     });
   });
 
-  try {
-    getUserInfo('mkorchev', 'kazoo').then(res => {
-        console.log(res);
-    }).catch(err => {
-      console.log(err);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-
 exports.getTesting = getTesting;
 exports.getUserInfo = getUserInfo;
 exports.fetchCaption = fetchCaption;
